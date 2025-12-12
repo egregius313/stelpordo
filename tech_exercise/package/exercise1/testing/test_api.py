@@ -22,6 +22,9 @@ def unique_usernames(draw):
 
 @given(name=unique_usernames())
 def test_create_person_success(name):
+    exists_response = get_person_by_name(name)
+    hypot_assume(exists_response.status_code == 404)
+
     response = create_person(name)
     assert response.status_code == 200
     data = response.json()
@@ -34,10 +37,10 @@ def test_create_person_success(name):
 @given(name=unique_usernames())
 def test_create_same_person_twice(name):
     exists_response = get_person_by_name(name)
-    hypot_assume(exists_response.status_code == 500)
+    hypot_assume(exists_response.status_code == 404)
 
     response1 = create_person(name)
     assert response1.status_code == 200
 
     response2 = create_person(name)
-    assert response2.status_code == 500
+    assert response2.status_code == 409

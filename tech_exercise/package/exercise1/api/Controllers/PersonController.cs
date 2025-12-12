@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using StargateAPI.Business.Commands;
 using StargateAPI.Business.Queries;
 using System.Net;
+using Microsoft.Data.Sqlite;
+using System.Runtime.CompilerServices;
 
 namespace StargateAPI.Controllers
 {
@@ -50,6 +52,16 @@ namespace StargateAPI.Controllers
                     Name = name
                 });
 
+                if (result.Person is null)
+                {
+                    return this.GetResponse(new BaseResponse()
+                    {
+                        Message = "No people found",
+                        Success = false,
+                        ResponseCode = (int)HttpStatusCode.NotFound
+                    });
+                }
+
                 return this.GetResponse(result);
             }
             catch (Exception ex)
@@ -77,6 +89,16 @@ namespace StargateAPI.Controllers
             }
             catch (Exception ex)
             {
+                if (CausedByUniquenessConstraint(ex))
+                {
+                    return this.GetResponse(new BaseResponse()
+                    {
+                        Message = "Person with that name already exists",
+                        Success = false,
+                        ResponseCode = (int)HttpStatusCode.Conflict
+                    });
+                }
+
                 return this.GetResponse(new BaseResponse()
                 {
                     Message = ex.Message,
@@ -84,7 +106,27 @@ namespace StargateAPI.Controllers
                     ResponseCode = (int)HttpStatusCode.InternalServerError
                 });
             }
+        }
 
+        /// <summary>
+        /// Checks if an exception was caused by a constraint violation in SQLite
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        private static bool CausedByUniquenessConstraint(Exception ex)
+        {
+            while (ex != null)
+            {
+                // Error code 19 is SQLITE_CONSTRAINT
+                // https://www.sqlite.org/rescode.html#constraint
+                // In this case, we assume that the constraint violation is due to uniqueness
+                if (ex is SqliteException sqliteEx && sqliteEx.SqliteErrorCode == 19)
+                {
+                    return true;
+                }
+                ex = ex.InnerException;
+            }
+            return false;
         }
     }
 }
