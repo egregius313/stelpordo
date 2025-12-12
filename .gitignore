@@ -1,0 +1,6 @@
+*.codeql.db/
+[bB]in/
+[oO]bj/
+
+# Testing with SAST
+*.sarif
