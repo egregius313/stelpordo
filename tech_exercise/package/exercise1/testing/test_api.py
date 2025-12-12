@@ -9,9 +9,18 @@ from .api_wrapper import BASE_URL, create_person, get_person_by_name
 BASE_URL = "http://localhost:3405"
 
 def usernames():
-    return st.text(alphabet=string.ascii_letters, min_size=1, max_size=20).filter(lambda s: s.isalpha())
+    return st.text(alphabet=string.ascii_letters, min_size=1, max_size=20)
 
-@given(name=usernames())
+@st.composite
+def unique_usernames(draw):
+    seen_this_test = draw(st.shared(st.builds(set), key="seen_usernames"))
+    while (name := draw(usernames())) in seen_this_test:
+        continue
+    seen_this_test.add(name)
+    return name
+
+
+@given(name=unique_usernames())
 def test_create_person_success(name):
     response = create_person(name)
     assert response.status_code == 200
@@ -22,7 +31,7 @@ def test_create_person_success(name):
     assert data.get("success") == True
     assert data.get("responseCode") == 200
 
-@given(name=usernames())
+@given(name=unique_usernames())
 def test_create_same_person_twice(name):
     exists_response = get_person_by_name(name)
     hypot_assume(exists_response.status_code == 500)
