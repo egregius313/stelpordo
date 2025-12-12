@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using StargateAPI.Business.Commands;
 using StargateAPI.Business.Data;
 
@@ -33,6 +34,13 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Apply any pending EF Core migrations at startup so the SQLite DB is created/updated.
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<StargateContext>();
+    db.Database.Migrate();
+}
 
 app.Run();
 
