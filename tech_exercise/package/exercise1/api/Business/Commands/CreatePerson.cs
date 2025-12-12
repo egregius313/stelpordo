@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using MediatR.Pipeline;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using StargateAPI.Business.Data;
+using StargateAPI.Business.Exceptions;
 using StargateAPI.Controllers;
 
 namespace StargateAPI.Business.Commands
@@ -44,15 +46,47 @@ namespace StargateAPI.Business.Commands
                    Name = request.Name
                 };
 
-                await _context.People.AddAsync(newPerson);
+                try
+                {
+                    await _context.People.AddAsync(newPerson);
 
-                await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();                
+                } catch (Exception ex)
+                {
+                    if (CausedByUniquenessConstraint(ex))
+                    {
+                        throw new PersonAlreadyExistsExecption(request.Name, ex);
+                    }
+                    throw;
+                }
 
                 return new CreatePersonResult()
                 {
                     Id = newPerson.Id
                 };
           
+        }
+
+        /// <summary>
+        /// Checks if an exception was caused by a constraint violation in SQLite
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        private static bool CausedByUniquenessConstraint(Exception ex)
+        {
+            // https://www.sqlite.org/rescode.html#constraint
+            const int SQLITE_CONSTRAINT = 19;
+            const int SQLITE_CONSTRAINT_UNIQUE = 2067;
+
+            while (ex != null)
+            {
+                if (ex is SqliteException sqliteEx && sqliteEx.SqliteErrorCode == SQLITE_CONSTRAINT && sqliteEx.SqliteExtendedErrorCode == SQLITE_CONSTRAINT_UNIQUE)
+                {
+                    return true;
+                }
+                ex = ex.InnerException;
+            }
+            return false;
         }
     }
 
