@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace StargateAPI.Business.Data
 {
     [Table("Person")]
+    [Index(nameof(Name), IsUnique = true)]
     public class Person
     {
         public int Id { get; set; }
