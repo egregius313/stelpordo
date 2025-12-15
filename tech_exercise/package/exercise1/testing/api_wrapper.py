@@ -31,7 +31,8 @@ def create_astronaut_duty(request: CreateAstronautDutyRequest) -> requests.Respo
     json_payload = {
         "name": request.name,
         "rank": request.rank,
-        "duty": request.duty,
+        "dutyTitle": request.duty,
         "dutyStartDate": request.duty_start_date.isoformat()
     }
     return requests.post(f"{BASE_URL}/astronautduty", json=json_payload)
+
