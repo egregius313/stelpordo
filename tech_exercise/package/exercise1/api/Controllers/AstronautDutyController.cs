@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using StargateAPI.Business.Commands;
+using StargateAPI.Business.Exceptions;
 using StargateAPI.Business.Queries;
 using System.Net;
 
@@ -42,8 +43,28 @@ namespace StargateAPI.Controllers
         [HttpPost("")]
         public async Task<IActionResult> CreateAstronautDuty([FromBody] CreateAstronautDuty request)
         {
+            try {
                 var result = await _mediator.Send(request);
                 return this.GetResponse(result);           
+            }
+            catch (PersonDoesNotExistsExecption ex)
+            {
+                return this.GetResponse(new BaseResponse()
+                {
+                    Message = ex.Message,
+                    Success = false,
+                    ResponseCode = (int)HttpStatusCode.NotFound
+                });
+            }
+            catch (ConflictingDutyException ex)
+            {
+                return this.GetResponse(new BaseResponse()
+                {
+                    Message = ex.Message,
+                    Success = false,
+                    ResponseCode = (int)HttpStatusCode.Conflict
+                });
+            }
         }
     }
 }
