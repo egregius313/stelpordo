@@ -71,7 +71,7 @@ namespace StargateAPI.Business.Commands
                 astronautDetail.CareerStartDate = request.DutyStartDate.Date;
                 if (request.DutyTitle == "RETIRED")
                 {
-                    astronautDetail.CareerEndDate = request.DutyStartDate.Date;
+                    astronautDetail.CareerEndDate = request.DutyStartDate.Date.AddDays(-1);
                 }
 
                 await _context.AstronautDetails.AddAsync(astronautDetail);
