@@ -4,6 +4,10 @@ import requests
 
 BASE_URL = "http://localhost:3405"
 
+def healthcheck() -> bool:
+    req = requests.get(f"{BASE_URL}/healthcheck")
+    return req.status_code == 200
+
 def create_person(name: str) -> requests.Response:
     return requests.post(f"{BASE_URL}/person", json=name)
 
