@@ -1,0 +1,15 @@
+thead {
+    background-color: #062c43;
+    color: #ced7e0;
+}
+
+tbody tr {
+    background-color: #ced7e0;
+    font-family: 'Baskervville', serif;
+}
+
+tbody tr a {
+    background-color: #054569;
+    color: #ced7e0;
+    padding: 4px 8px;
+}

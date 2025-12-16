@@ -1,0 +1,19 @@
+<!-- -->
+<table class="table-auto md:table-fixed border-collapse border border-gray-300 w-full rounded-md">
+    <thead>
+        <tr>
+            <th class="border border-gray-300">#</th>
+            <th class="border border-gray-300">Name</th>
+            <th class="border border-gray-300">Current Rank</th>
+            <th class="border border-gray-300">Current Duty Title</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let person of persons()">
+            <td class="border border-gray-300 text-center"><a [routerLink]="['/person', person.name]">View</a></td>
+            <td class="border border-gray-300">{{ person.name }}</td>
+            <td class="border border-gray-300">{{ person.currentRank }}</td>
+            <td class="border border-gray-300">{{ person.currentDutyTitle }}</td>
+        </tr>
+    </tbody>
+</table>
