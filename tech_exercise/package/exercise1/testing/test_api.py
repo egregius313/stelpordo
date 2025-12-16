@@ -9,8 +9,38 @@ from .api_wrapper import BASE_URL, create_person, get_person_by_name, CreateAstr
 
 BASE_URL = "http://localhost:3405"
 
+def first_names() -> st.SearchStrategy[str]:
+    return st.sampled_from([
+        "Alice", "Bob", "Charlie", "Diana", "Ethan",
+        "Fiona", "George", "Hannah", "Ian", "Julia",
+        "Kevin", "Laura", "Michael", "Nina", "Oliver",
+        "Paula", "Quentin", "Rachel", "Sam", "Tina",
+        "Uma", "Victor", "Wendy", "Xander", "Yvonne", "Zach",
+        "Alexander", "Benjamin", "Charlotte", "Daniel", "Evelyn",
+        "Frederick", "Gabriella", "Harold", "Isabella",
+        "Jonathan", "Katherine", "Leonardo", "Madeline", "Nathaniel",
+        "Olivia", "Penelope", "Quincy", "Rebecca", "Sebastian",
+        "Theodore", "Ulysses", "Valentina", "William", "Xavier",
+        "Yosef", "Zoe"
+    ])
+
+def last_names() -> st.SearchStrategy[str]:
+    return st.sampled_from([
+        "Anderson", "Brown", "Clark", "Davis", "Evans",
+        "Garcia", "Harris", "Johnson", "King", "Lee",
+        "Martinez", "Nelson", "O'Connor", "Perez", "Roberts",
+        "Smith", "Taylor", "Upton", "Vasquez", "White",
+        "Young", "Zimmerman",
+        "Adams", "Baker", "Carter", "Diaz", "Edwards",
+        "Foster", "Gonzalez", "Hill", "Ingram", "Jackson",
+        "Kim", "Lopez", "Moore", "Nguyen", "Ortiz",
+        "Patel", "Quinn", "Ramirez", "Sanchez", "Turner",
+        "Underwood", "Vargas", "Walker", "Xu", "Yang", "Zhang"
+    ])
+
 def usernames():
-    return st.text(alphabet=string.ascii_letters, min_size=1, max_size=20)
+    # return st.text(alphabet=string.ascii_letters, min_size=1, max_size=20)
+    return st.builds(lambda first, last: f"{first} {last}", first=first_names(), last=last_names())
 
 @st.composite
 def unique_usernames(draw):
