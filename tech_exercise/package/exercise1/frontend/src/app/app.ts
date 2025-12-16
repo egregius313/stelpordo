@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 
 import { PersonList } from './components/person-list/person-list';
+import { ErrorMessageService } from './services/errormessage';
 
 @Component({
   selector: 'app-root',
@@ -11,4 +12,6 @@ import { PersonList } from './components/person-list/person-list';
 })
 export class App {
   protected readonly title = signal('frontend');
+
+  constructor(public errorMessageService: ErrorMessageService) {}
 }
