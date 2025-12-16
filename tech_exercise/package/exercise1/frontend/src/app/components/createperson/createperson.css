@@ -1,0 +1,13 @@
+div.person-form {
+    background-color: #ced7e0;
+}
+
+div.person-form-header {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: bold;
+    font-family: 'Baskervville', serif;
+    background-color: #062c43;
+    color: #ced7e0;
+    padding: 8px;
+}

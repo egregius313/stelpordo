@@ -28,4 +28,10 @@ export class PersonService {
   getPersonByName(name: string): Observable<Person> {
     return this.http.get<Person>(`${this.apiUrl}/person/${name}`);
   }
+
+  createPerson(name: string): Observable<Person> {
+    return this.http.post<Person>(`${this.apiUrl}/person`, JSON.stringify(name), {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
 }
