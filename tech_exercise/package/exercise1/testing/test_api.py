@@ -50,6 +50,15 @@ def unique_usernames(draw):
     seen_this_test.add(name)
     return name
 
+@st.composite
+def unique_ids(draw):
+    ints = st.integers(min_value=1, max_value=10000)
+    seen_this_test = draw(st.shared(st.builds(set), key="seen_ids"))
+    while (id := draw(ints)) in seen_this_test:
+        continue
+    seen_this_test.add(id)
+    return id
+
 
 def ranks():
     return st.sampled_from(["Commander", "Lieutenant", "Captain", "Major", "Colonel"])    
