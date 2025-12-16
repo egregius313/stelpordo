@@ -12,4 +12,11 @@ tbody tr a {
     background-color: #054569;
     color: #ced7e0;
     padding: 4px 8px;
+    border-radius: 6px;
+}
+
+table {
+    tr, td, th {
+        padding: 8px;
+    }
 }

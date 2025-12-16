@@ -26,7 +26,7 @@ export class PersonService {
   }
 
   getPersonByName(name: string): Observable<Person> {
-    return this.http.get<Person>(`${this.apiUrl}/person/${name}`);
+    return this.http.get<{ person: Person }>(`${this.apiUrl}/person/${name}`).pipe(map(data => data.person))
   }
 
   createPerson(name: string): Observable<Person> {

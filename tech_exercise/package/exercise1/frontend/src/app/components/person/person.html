@@ -1,14 +1,16 @@
-<form>
-    <div>
-        <label>Name:</label>
+<div class="person-form w-full max-w-xs">
+<form class="shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <div class="mb-4">
+        <label class="block">Name:</label>
         <span>{{ person().name }}</span>
     </div>
-    <div>
-        <label>Current Duty Title:</label>
+    <div class="mb-4">
+        <label class="block">Current Duty Title:</label>
         <span>{{ person().currentDutyTitle }}</span>
     </div>
-    <div>
-        <label>Current Rank:</label>
+    <div class="mb-4">
+        <label class="block">Current Rank:</label>
         <span>{{ person().currentRank }}</span>
     </div>
 </form>
+</div>
