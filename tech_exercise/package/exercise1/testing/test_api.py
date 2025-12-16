@@ -183,3 +183,59 @@ def test_retirement(name, when, rank):
         pytest.fail("careerEndDate is not a valid ISO format datetime")
     career_end_day = career_end_date.date()
     assert career_end_day == day_before_retirement
+
+@given(name=unique_usernames(), when=st.datetimes(), rank=ranks())
+def test_first_duty_assignment(name, when, rank):
+    hypot_assume(not user_exists(name))
+
+    create_if_not_exists(name)
+
+    person = get_person_by_name(name)
+    hypot_assume(person.status_code == 200)
+
+    info = person.json().get("person")
+    hypot_assume(info.get("currentDutyTitle") == "" and info.get("currentRank") == "")
+
+    duty = "First Duty Assignment"
+
+    request = CreateAstronautDutyRequest(
+        name=name,
+        rank=rank,
+        duty=duty,
+        duty_start_date=when
+    )
+
+    response = create_astronaut_duty(request)
+    assert response.status_code == 200, response.text
+
+    person = get_person_by_name(name)
+    assert person.status_code == 200
+
+    info = person.json().get("person")
+    assert info.get("currentDutyTitle") == duty
+    assert info.get("currentRank") == rank
+   
+    current_start_date = datetime.datetime.fromisoformat(info.get("careerStartDate"))
+    assert current_start_date.date() == when.date()
+
+@given(name=usernames())
+def test_current_duty_no_duty_end_date(name):
+    create_if_not_exists(name)
+    hypot_assume(user_exists(name))
+
+    person = get_person_by_name(name)
+    hypot_assume(person.status_code == 200)
+
+    info = person.json().get("person")
+    current_duty = info.get("currentDutyTitle")
+    current_rank = info.get("currentRank")
+    career_start_date_str = info.get("careerStartDate")
+    career_end_date_str = info.get("careerEndDate")
+
+    is_retired = current_duty == "RETIRED"
+
+    if is_retired:
+        assert career_end_date_str is not None
+    else:
+        assert career_end_date_str is None
+    
