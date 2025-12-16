@@ -101,9 +101,10 @@ def test_create_same_person_twice(name):
     response2 = create_person(name)
     assert response2.status_code == 409
 
-def test_create_astronaut_duty_success():
-    name = "TestAstronaut"
-
+@given(id=unique_ids())
+def test_create_astronaut_duty_success(id):
+    name = f"TestAstronaut{id}"
+    hypot_assume(not user_exists(name))
     assert create_if_not_exists(name)
 
     rank = "Commander"
