@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 import requests
 
-BASE_URL = "http://localhost:3405"
+BASE_URL = "http://localhost:8080"
 
 def healthcheck() -> bool:
     req = requests.get(f"{BASE_URL}/healthcheck")
